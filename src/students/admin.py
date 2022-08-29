@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Student, Faculty, Speciality, Mark
+from .models import Student, Faculty, Speciality, Mark, Module, Lesson, Result, Semester
 
 
 @admin.register(Student)
@@ -27,6 +27,24 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.register(Mark)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ("mark_type", "student")
+    list_display = ("student", "lesson", "semester", "mark_type", )
 
 
+@admin.register(Module)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ("name", "faculty", "coefficient")
+
+
+@admin.register(Lesson)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ("name", "coefficient")
+
+
+@admin.register(Result)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ("semester", "student", )
+
+
+@admin.register(Semester)
+class StudentAdmin(admin.ModelAdmin):
+    pass
