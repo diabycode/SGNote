@@ -40,7 +40,6 @@ class Student(models.Model):
 
 class Module(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, verbose_name="Facultée")
-    coefficient = models.FloatField(default=1, verbose_name="Coéfficient")
     name = models.CharField(max_length=100, verbose_name="Nom")
 
     class Meta:
@@ -62,8 +61,20 @@ class Lesson(models.Model):
         return f"{self.name}({self.module})"
 
 
+class AcademicYear(models.Model):
+    academic_year_start = models.IntegerField(verbose_name="année de début")
+    academic_year_end = models.IntegerField(verbose_name="année de fin")
+
+    def __str__(self):
+        return f"{self.academic_year_start} - {self.academic_year_end}"
+
+    class Meta:
+        verbose_name = "année scolaire"
+
+
 class Semester(models.Model):
     semester_number = models.IntegerField()
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "semestre"
@@ -72,22 +83,12 @@ class Semester(models.Model):
         return f"semestre {self.semester_number}"
 
 
-class Result(models.Model):
-    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="Semestre")
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name="Etudiant")
-
-    class Meta:
-        verbose_name = "result"
-
-    def __str__(self):
-        return f"résultat {self.semester}"
-
-
 class Mark(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True)
     mark_type = models.FloatField(verbose_name="Note")
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="Semestre", null=True)
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "note"

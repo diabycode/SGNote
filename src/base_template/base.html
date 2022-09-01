@@ -8,6 +8,36 @@
 </head>
 <body>
     <h1>SGNote</h1>
+    {% if user.is_authenticated %}
+        <div class="user-profile">
+            <h4>{{ user.username }}</h4>
+            <a href="{% url 'accounts:logout' %}"> Déconnexion </a>
+        </div>
+
+        <div class="menu">
+            <ul>
+                <li> Départements
+                    <ul>
+                        <li><a href="{% url 'students:students_faculties' %}"> Facultés </a> </li>
+                        <li><a href="{% url 'students:students_specialities' %}"> Spécialités </a> </li>
+                        <li><a href="{% url 'students:students_modules' %}"> Modules </a> </li>
+                        <li><a href="{% url 'students:students_lessons' %}"> Matières </a> </li>
+                    </ul>
+                </li>
+                <li> Etudiants
+                    <ul>
+                        <li><a href="{% url 'students:students_list' %}"> Liste étudiants </a> </li>
+                        <li><a href="#"> Notes étudiants </a> </li>
+                        <li><a href="#"> Résultats étudiants </a> </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+
+    {% endif %}
+
+
 
     {% block body_content %}
         <!--   all content     -->
