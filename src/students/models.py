@@ -1,8 +1,10 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Faculty(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
         verbose_name = "facultée"
@@ -10,16 +12,35 @@ class Faculty(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    @property
+    def students_count(self):
+        return len(self.student_set.all())
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Faculty, self).save(*args, **kwargs)
+
 
 class Speciality(models.Model):
     name = models.CharField(max_length=100)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
+    slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
         verbose_name = "spécialitée"
 
     def __str__(self):
         return f"{self.name}({self.faculty})"
+
+    @property
+    def students_count(self):
+        return len(self.student_set.all())
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Speciality, self).save(*args, **kwargs)
 
 
 class Student(models.Model):
@@ -37,10 +58,26 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.last_name} {self.first_name}"
 
+    @property
+    def full_name(self):
+        return f"{self.last_name} {self.first_name}"
+
+    def get_marks(self, lesson=None, semester=None, academic_year=None):
+        marks = self.mark_set.all()
+        if lesson:
+            marks = marks.filter(lesson=lesson)
+        if semester:
+            marks = marks.filter(semester=semester)
+        if academic_year:
+            marks = marks.filter(academic_year=academic_year)
+
+        return marks
+
 
 class Module(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, verbose_name="Facultée")
     name = models.CharField(max_length=100, verbose_name="Nom")
+    slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
         verbose_name = "module"
@@ -48,17 +85,32 @@ class Module(models.Model):
     def __str__(self):
         return f"{self.name}({self.faculty})"
 
+    @property
+    def lesson_count(self):
+        return len(self.lesson_set.all())
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Module, self).save(*args, **kwargs)
+
 
 class Lesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Module")
     coefficient = models.FloatField(default=1, verbose_name="Coéfficient")
     name = models.CharField(max_length=100, verbose_name="Nom")
+    slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
         verbose_name = "lesson"
 
     def __str__(self):
-        return f"{self.name}({self.module})"
+        return f"{self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Lesson, self).save(*args, **kwargs)
 
 
 class AcademicYear(models.Model):

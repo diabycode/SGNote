@@ -1,4 +1,4 @@
-from django.urls import  path
+from django.urls import path
 
 from .views import *
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('modules/', students_modules, name="students_modules"),
     path('lessons/', students_lessons, name="students_lessons"),
     path('specialities/', students_specialities, name="students_specialities"),
+    path('marks/', students_marks, name="students_marks"),
 ]
 
 
