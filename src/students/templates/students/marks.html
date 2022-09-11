@@ -10,6 +10,18 @@
 
 
     <form action="{% url 'students:students_marks' %}" method="GET">
+
+        <label for="faculty">Classe</label>
+        <select id="faculty" name="faculty">
+            <option value="">--</option>
+            {% for faculty in all_faculties %}
+                <option value="{{ faculty.slug }}"
+                        {% if faculty.slug == faculty_selected.slug %}selected="selected"{% endif %}>
+                    {{ faculty }}
+                </option>
+            {% endfor %}
+        </select>
+
         <label for="lesson">Matière</label>
         <select id="lesson" name="lesson">
             <option value="">--</option>

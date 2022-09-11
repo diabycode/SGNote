@@ -10,12 +10,15 @@
 
     <table border="1px">
         <tr class="table-head">
-                <td>Nom de la spécialité</td><td>faculté</td>
+            <td>Nom de la spécialité</td>
+            <td>faculté d'appartenance</td>
+            <td>Nombre d'étudiant</td>
         </tr>
         {% for speciality in specialities %}
         <tr>
             <td>{{ speciality.name }}</td>
             <td>{{ speciality.faculty }}</td>
+            <td>{{ speciality.students_count }}</td>
         </tr>
         {% endfor %}
     </table>

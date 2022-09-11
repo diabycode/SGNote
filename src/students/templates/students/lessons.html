@@ -10,12 +10,15 @@
 
     <table border="1px">
         <tr class="table-head">
-                <td>Nom de la matière</td> <td>coéfficient</td>
+            <td>Nom de la matière</td>
+            <td>coéfficient</td>
+            <td>Module d'appartenance</td>
         </tr>
         {% for lesson in lessons %}
         <tr>
             <td>{{ lesson.name }}</td>
             <td>{{ lesson.coefficient }}</td>
+            <td>{{ lesson.module }}</td>
         </tr>
         {% endfor %}
     </table>

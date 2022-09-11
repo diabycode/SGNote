@@ -10,11 +10,14 @@
 
     <table border="1px">
         <tr class="table-head">
-                <td>Nom du module</td><td>faculté</td>
+            <td>Nom du module</td>
+            <td>Nombre de matière</td>
+            <td>faculté d'appartenance</td>
         </tr>
         {% for module in modules %}
         <tr>
             <td>{{ module.name }}</td>
+            <td>{{ module.lesson_count }}</td>
             <td>{{ module.faculty }}</td>
         </tr>
         {% endfor %}

@@ -16,6 +16,10 @@ class Faculty(models.Model):
     def students_count(self):
         return len(self.student_set.all())
 
+    @property
+    def modules_count(self):
+        return len(self.module_set.all())
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
@@ -31,7 +35,7 @@ class Speciality(models.Model):
         verbose_name = "spécialitée"
 
     def __str__(self):
-        return f"{self.name}({self.faculty})"
+        return f"{self.name}"
 
     @property
     def students_count(self):
@@ -83,7 +87,7 @@ class Module(models.Model):
         verbose_name = "module"
 
     def __str__(self):
-        return f"{self.name}({self.faculty})"
+        return f"{self.name}"
 
     @property
     def lesson_count(self):
