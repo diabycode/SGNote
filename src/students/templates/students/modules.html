@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>students/modules</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h3>Modules</h3>
+
+    <table border="1px">
+        <tr class="table-head">
+            <td>Nom du module</td>
+            <td>Nombre de matière</td>
+            <td>faculté d'appartenance</td>
+        </tr>
+        {% for module in modules %}
+        <tr>
+            <td>{{ module.name }}</td>
+            <td>{{ module.lesson_count }}</td>
+            <td>{{ module.faculty }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

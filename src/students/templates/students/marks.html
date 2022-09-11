@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>students/marks</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h3>Notes des étudiants</h3>
+
+
+    <form action="{% url 'students:students_marks' %}" method="GET">
+
+        <label for="faculty">Classe</label>
+        <select id="faculty" name="faculty">
+            <option value="">--</option>
+            {% for faculty in all_faculties %}
+                <option value="{{ faculty.slug }}"
+                        {% if faculty.slug == faculty_selected.slug %}selected="selected"{% endif %}>
+                    {{ faculty }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="lesson">Matière</label>
+        <select id="lesson" name="lesson">
+            <option value="">--</option>
+            {% for lesson in all_lessons %}
+                <option value="{{ lesson.slug }}"
+                        {% if lesson.slug == lesson_selected.slug %}selected="selected"{% endif %}>
+                    {{ lesson }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="semester">Semestre</label>
+        <select name="semester" id="semester">
+            {% for semester in semesters %}
+                <option value="{{ semester.pk }}"
+                {% if semester.pk == semester_selected.pk %}selected="selected"{% endif %}>
+                    {{ semester }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <label for="academic_year">Année scolaire</label>
+        <select name="academic_year" id="academic_year">
+            {% for academic_year in academic_years %}
+                <option value="{{ academic_year.pk }}"
+                {% if academic_year.pk == academic_year_selected.pk %}selected="selected"{% endif %}>
+                    {{ academic_year }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="valider">
+    </form>
+
+    {% if marks %}
+        <table border=".5px">
+            {% for mark in marks %}
+                <tr>
+                    <td> {{ mark.student }} </td>
+                    {% for m in mark.mark_types %}
+                        <td> {{ m }} </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>students/faculty</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h3>Facultés</h3>
+
+    <table border="1px">
+        <tr class="table-head">
+                <td>Nom de la facultée</td>
+                <td>Nombre de module</td>
+                <td>Nombre d'étudiant</td>
+        </tr>
+        {% for faculty in faculties %}
+        <tr>
+            <td>{{ faculty.name }}</td>
+            <td>{{ faculty.modules_count }}</td>
+            <td>{{ faculty.students_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
