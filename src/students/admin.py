@@ -1,9 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
-<<<<<<< HEAD
-=======
-from .models import Student, Faculty, Speciality, Mark, Module, Lesson, Semester, AcademicYear
+from .models import *
 
 
 @admin.register(Student)
@@ -50,4 +47,3 @@ class AcademicYearAdmin(admin.ModelAdmin):
 @admin.register(Semester)
 class SemesterAdmin(admin.ModelAdmin):
     pass
->>>>>>> dev2

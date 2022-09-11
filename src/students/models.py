@@ -1,8 +1,4 @@
 from django.db import models
-<<<<<<< HEAD
-
-# Create your models here.
-=======
 from django.utils.text import slugify
 
 
@@ -153,5 +149,3 @@ class Mark(models.Model):
     class Meta:
         verbose_name = "note"
 
-
->>>>>>> dev2

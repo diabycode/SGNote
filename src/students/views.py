@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 from django.shortcuts import render
 
 # Create your views here.
-=======
 from pprint import pprint
 
 from django.http import HttpResponse
@@ -124,4 +122,3 @@ def students_marks(request):
             )
 
     return render(request, "students/marks.html", context=context)
->>>>>>> dev2
