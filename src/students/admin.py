@@ -46,4 +46,7 @@ class AcademicYearAdmin(admin.ModelAdmin):
 
 @admin.register(Semester)
 class SemesterAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        "semester_number",
+        "academic_year",
+    )

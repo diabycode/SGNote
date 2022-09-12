@@ -1,9 +1,11 @@
+from datetime import datetime
+
 from django.db import models
 from django.utils.text import slugify
 
 
 class Faculty(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
@@ -27,7 +29,7 @@ class Faculty(models.Model):
 
 
 class Speciality(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=130, blank=True, null=True)
 
@@ -80,7 +82,7 @@ class Student(models.Model):
 
 class Module(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, verbose_name="Facultée")
-    name = models.CharField(max_length=100, verbose_name="Nom")
+    name = models.CharField(max_length=100, verbose_name="Nom", unique=True)
     slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
@@ -102,7 +104,7 @@ class Module(models.Model):
 class Lesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Module")
     coefficient = models.FloatField(default=1, verbose_name="Coéfficient")
-    name = models.CharField(max_length=100, verbose_name="Nom")
+    name = models.CharField(max_length=100, verbose_name="Nom", unique=True)
     slug = models.SlugField(max_length=130, blank=True, null=True)
 
     class Meta:
@@ -118,11 +120,26 @@ class Lesson(models.Model):
 
 
 class AcademicYear(models.Model):
-    academic_year_start = models.IntegerField(verbose_name="année de début")
-    academic_year_end = models.IntegerField(verbose_name="année de fin")
+    semesters_number = models.IntegerField(default=2)
+    bigin_date = models.DateField(verbose_name="Date début", default=datetime.today().date())
+    end_date = models.DateField(verbose_name="Date fin")
 
     def __str__(self):
-        return f"{self.academic_year_start} - {self.academic_year_end}"
+        if self.bigin_date and self.end_date:
+            return f"{self.bigin_date.year} - {self.end_date.year}"
+        else:
+            return super().__str__()
+
+    def save(self, *args, **kwargs):
+        semesters = []
+        for i in range(1, int(self.semesters_number)+1):
+            semester = Semester()
+            semester.semester_number = i
+            semester.academic_year = self
+            semesters.append(semester)
+        super().save(*args, **kwargs)
+        for semester in semesters:
+            semester.save()
 
     class Meta:
         verbose_name = "année scolaire"
