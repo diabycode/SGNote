@@ -11,10 +11,10 @@
 
     <form action="#" method="GET">
 
-        {% render_field form.faculty hx-get="/students/module_dropdown/" hx-trigger="change" hx-target="#id_module" %}
-        {% render_field form.module hx-get="/students/lesson_dropdown/" hx-trigger="change" hx-target="#id_lesson" %}
+        {% render_field form.faculty hx-get="/marks_and_results/module_dropdown/" hx-trigger="change" hx-target="#id_module" %}
+        {% render_field form.module hx-get="/marks_and_results/lesson_dropdown/" hx-trigger="change" hx-target="#id_lesson" %}
         {% render_field form.lesson %}
-        {% render_field form.academic_year hx-get="/students/semester_dropdown/" hx-trigger="change" hx-target="#id_semester" %}
+        {% render_field form.academic_year hx-get="/marks_and_results/semester_dropdown/" hx-trigger="change" hx-target="#id_semester" %}
         {% render_field form.semester %}
 
         <input type="submit" value="valider">

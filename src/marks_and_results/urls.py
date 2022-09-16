@@ -2,6 +2,8 @@ from django.urls import path
 
 from marks_and_results.views import students_marks, module_dropdown, lesson_dropdown, semester_dropdown
 
+app_name = "marks_and_results"
+
 urlpatterns = [
     path('marks/', students_marks, name="students_marks"),
 

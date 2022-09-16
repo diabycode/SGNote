@@ -9,7 +9,7 @@
     <h3>Facultés</h3>
 
     <h4> AJoutez une nouvelle faculté </h4>
-    <form action="{% url 'students:students_faculties' %}" method="POST">
+    <form action="{% url 'departements_and_modules:students_faculties' %}" method="POST">
         {% csrf_token %}
         {{ add_form }}
         <input type="submit" value="Ajouter">

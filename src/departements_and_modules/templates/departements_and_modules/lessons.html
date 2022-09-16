@@ -9,7 +9,7 @@
     <h3>Matières</h3>
 
     <h4> AJoutez une matière </h4>
-    <form action="{% url 'students:students_lessons' %}" method="POST">
+    <form action="{% url 'departements_and_modules:students_lessons' %}" method="POST">
         {% csrf_token %}
         {{ add_form }}
         <input type="submit" value="Ajouter">
