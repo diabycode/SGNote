@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'accounts',
     'students',
+    'departements_and_modules',
+    'marks_and_results',
 ]
 
 MIDDLEWARE = [
