@@ -13,7 +13,12 @@ urlpatterns = [
     path('specialities/', students_specialities, name="students_specialities"),
     path('marks/', students_marks, name="students_marks"),
 
-    path('create/', StudentCreateView.as_view(), name="student_create"),
+    path('create/', student_create_view, name="student_create"),
+
+    path('module_dropdown/', module_dropdown, name="module_dropdown"),
+    path('lesson_dropdown/', lesson_dropdown, name="lesson_dropdown"),
+    path('semester_dropdown/', semester_dropdown, name="semester_dropdown"),
+    path('specialities_dropdown/', specialities_dropdown, name="specialities_dropdown"),
 ]
 
 

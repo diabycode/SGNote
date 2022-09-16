@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load widget_tweaks %}
 
 {% block title %}
     <title>students/create</title>
@@ -7,12 +7,38 @@
 
 
 {% block body_content %}
-    <h2>Créer un étudiant </h2>
+    <h2>Créer un étudiant</h2>
 
-    <form action="" method="POST">
+    <form action="{% url 'students:student_create' %}" method="POST">
 
         {% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            {{ form.faculty.label }}
+            {% render_field form.faculty hx-get="/students/specialities_dropdown/" hx-target="#id_speciality" hx-trigger="change" %}
+        </p>
+
+        <p>
+            {{ form.speciality.label }}
+            {% render_field form.speciality %}
+        </p>
+
+        <p>
+            {{ form.matricule.label }}
+            {% render_field form.matricule %}
+        </p>
+        <p>
+            {{ form.first_name.label }}
+            {% render_field form.first_name %}
+        </p>
+        <p>
+            {{ form.last_name.label }}
+            {% render_field form.last_name %}
+        </p>
+        <p>
+            {{ form.birth.label }}
+            {% render_field form.birth %}
+        </p>
+
         <input type="submit" value="Enrégistrer">
 
     </form>

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import django
 from django.db import models
 from django.utils.text import slugify
 
@@ -121,7 +122,7 @@ class Lesson(models.Model):
 
 class AcademicYear(models.Model):
     semesters_number = models.IntegerField(default=2)
-    bigin_date = models.DateField(verbose_name="Date début", default=datetime.today().date())
+    bigin_date = models.DateField(verbose_name="Date début", default=django.utils.timezone.now)
     end_date = models.DateField(verbose_name="Date fin")
 
     def __str__(self):
