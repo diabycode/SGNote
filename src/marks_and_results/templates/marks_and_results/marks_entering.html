@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+    <title>add_marks/entering</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h2>Saisir des notes</h2>
+    <div>
+        <p>{{ academic_year_selected }} | {{ semester_selected }}</p>
+        <p>Facultée: {{ faculty_selected }}</p>
+        <p>Module: {{ module_selected }}</p>
+        <p>Matière: {{ lesson_selected }}</p>
+    </div>
+    <p>ATTENTION: Les champs laissés vides seront remplacé par un 0 (zéro)</p>
+    <form action="{% url 'marks_and_results:marks_saving' %}" method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+            {{ field.as_hidden }}
+        {% endfor %}
+
+        <table border="1px">
+            <tr>
+                <td>Etudiant</td>
+                <td>Matricule</td>
+                <td>Note</td>
+            </tr>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.full_name }}</td>
+                    <td>{{ student.pk }}</td>
+                    <td><input type="number" name="{{student.pk}}_mark"></td>
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" value="Enrégistrer">
+    </form>
+
+{% endblock %}
+

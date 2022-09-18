@@ -1,11 +1,14 @@
 from django.urls import path
 
-from marks_and_results.views import students_marks, module_dropdown, lesson_dropdown, semester_dropdown
+from .views import *
 
 app_name = "marks_and_results"
 
 urlpatterns = [
     path('marks/', students_marks, name="students_marks"),
+    path('add_marks/', add_marks, name="add_marks"),
+    path('add_marks/entering', marks_entering, name="marks_entering"),
+    path('add_marks/marks_saving', marks_saving, name="marks_saving"),
 
     path('module_dropdown/', module_dropdown, name="module_dropdown"),
     path('lesson_dropdown/', lesson_dropdown, name="lesson_dropdown"),

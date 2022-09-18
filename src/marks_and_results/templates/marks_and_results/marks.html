@@ -8,8 +8,12 @@
 
 {% block body_content %}
     <h3>Notes des étudiants</h3>
+    <h4>
+        <a href="{% url 'marks_and_results:add_marks' %}">Saisir des notes</a>
+    </h4>
 
-    <form action="#" method="GET">
+    <h4>Rechercher</h4>
+    <form action="{% url 'marks_and_results:students_marks' %}" method="GET">
 
         {% render_field form.faculty hx-get="/marks_and_results/module_dropdown/" hx-trigger="change" hx-target="#id_module" %}
         {% render_field form.module hx-get="/marks_and_results/lesson_dropdown/" hx-trigger="change" hx-target="#id_lesson" %}

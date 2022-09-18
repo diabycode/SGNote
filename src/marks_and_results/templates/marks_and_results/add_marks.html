@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+
+{% block title %}
+    <title>add_marks</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h2>Saisir des notes</h2>
+    <form action="{% url 'marks_and_results:marks_entering' %}" method="POST">
+        {% csrf_token %}
+        <p>
+            {{ form.faculty.label }}
+            {% render_field form.faculty hx-get="/marks_and_results/module_dropdown/" hx-trigger="change" hx-target="#id_module" %}
+        </p>
+        <p>
+            {{ form.module.label }}
+            {% render_field form.module hx-get="/marks_and_results/lesson_dropdown/" hx-trigger="change" hx-target="#id_lesson" %}
+        </p>
+        <p>
+            {{ form.lesson.label }}
+            {% render_field form.lesson %}
+        </p>
+        <p>
+            {{ form.academic_year.label }}
+            {% render_field form.academic_year hx-get="/marks_and_results/semester_dropdown/" hx-trigger="change" hx-target="#id_semester" %}
+        </p>
+        <p>
+            {{ form.semester.label }}
+            {% render_field form.semester %}
+        </p>
+
+        <p>
+            <input type="submit" value="Suivant">
+        </p>
+    </form>
+
+{% endblock %}
