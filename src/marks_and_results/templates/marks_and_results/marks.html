@@ -24,17 +24,31 @@
         <input type="submit" value="valider">
     </form>
 
-    {% if marks %}
+    {% if max_len %}
         <table border=".5px" id="students_marks">
-            {% for mark in marks %}
+            <thead>
                 <tr>
-                    <td> {{ mark.student }} </td>
-                    {% for m in mark.mark_types %}
-                        <td> {{ m }} </td>
-                    {% endfor %}
+                    <td>N°</td>
+                    <td>Nom et prénom</td>
+                    <td colspan="{{max_len}}">Notes</td>
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                {% for mark in marks %}
+                    <tr>
+                        <td> {{ forloop.counter }} </td>
+                        <td> {{ mark.student }} </td>
+                        {% for m in mark.mark_types %}
+                            <td> {{ m }} </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
+    {% else %}
+
+        <p>Aucune note trouvé</p>
+
     {% endif %}
 
 {% endblock %}

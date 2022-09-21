@@ -10,6 +10,8 @@ from django.views import View
 from django.views.generic import CreateView
 
 import students
+from departements_and_modules.models import Module, Lesson, AcademicYear, Semester
+from marks_and_results.models import Mark
 from .forms import *
 from .models import *
 
@@ -36,6 +38,55 @@ def students_list(request):
 
     context["students"] = students
     return render(request, "students/list.html", context=context)
+
+
+def students_details(request, pk):
+    context = {}
+
+    student = get_object_or_404(Student, pk=pk)
+    student_faculty = student.faculty
+    student_faculty_modules = student_faculty.module_set.all()
+    student_faculty_lessons = []
+    for module in student_faculty_modules:
+        lessons = Lesson.objects.filter(module=module)
+        student_faculty_lessons.extend(lessons)
+
+    academic_years = AcademicYear.objects.all()
+    semesters = Semester.objects.all()
+
+    if not request.GET:
+        academic_year = academic_years.last()
+        semesters = semesters.filter(academic_year=academic_year)
+        student_marks = Mark.objects.filter(student=student, academic_year=academic_year, semester=semesters.last())
+        context["academic_year_selected"] = academic_year
+        context["semester_selected"] = semesters.last()
+    else:
+        academic_year = academic_years.get(pk=request.GET.get("academic_year"))
+        semesters = semesters.filter(academic_year=academic_year)
+
+        semester = semesters.get(pk=request.GET.get("semester"))
+
+        student_marks = Mark.objects.filter(student=student, academic_year=academic_year, semester=semester)
+
+        context["academic_year_selected"] = academic_year
+        context["semester_selected"] = semester
+
+    student_marks_mapped_lessons = []
+    for lesson in student_faculty_lessons:
+        marks_mapped_lesson = (lesson, [m for m in student_marks.filter(lesson=lesson)])
+        student_marks_mapped_lessons.append(marks_mapped_lesson)
+
+    marks_len = []
+    for mark in student_marks_mapped_lessons:
+        marks_len.append(len(mark[1]))
+    max_len = max(marks_len)
+
+    context["student"] = student
+    context["student_marks"] = student_marks_mapped_lessons
+    context["max_len"] = max_len
+    context["academic_years"] = academic_years
+    context["semesters"] = semesters
+    return render(request, "students/students_details.html", context=context)
 
 
 # created views

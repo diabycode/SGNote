@@ -29,22 +29,32 @@
     <br/>
 
     <table border="1px" id="students_list">
-        <tr class="table-head">
-            <td>Nom</td>
-            <td>Prénom</td>
-            <td>faculté</td>
-            <td>spécialité</td>
-            <td>matricule</td>
-        </tr>
-        {% for student in students %}
-        <tr id="students_list_data">
-            <td>{{ student.last_name }}</td>
-            <td>{{ student.first_name }}</td>
-            <td>{{ student.faculty }}</td>
-            <td>{{ student.speciality }}</td>
-            <td>{{ student.matricule }}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr class="table-head">
+                <td>N°</td>
+                <td>Nom</td>
+                <td>Prénom</td>
+                <td>faculté</td>
+                <td>spécialité</td>
+                <td>matricule</td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+                <tr id="students_list_data">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ student.last_name }}</td>
+                    <td>{{ student.first_name }}</td>
+                    <td>{{ student.faculty }}</td>
+                    <td>{{ student.speciality }}</td>
+                    <td>{{ student.matricule }}</td>
+                    <td>
+                        <a href="{% url 'students:students_details' student.pk %}">Détails</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
 {% endblock %}

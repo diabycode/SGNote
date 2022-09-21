@@ -16,7 +16,8 @@ def students_marks(request):
     form = SearchMarks()
 
     students = Student.objects.all()
-
+    marks = []
+    max_len = 0
     if request.GET:
         form = SearchMarks(request.GET)
         if form.is_valid():
@@ -39,13 +40,20 @@ def students_marks(request):
                     academic_year=academic_year_selected,
                     semester=semester_selected,
                 )
-                context["marks"].append(
+                marks.append(
                     {
                         "student": student,
                         "mark_types": [m.mark_type for m in s_marks],
                     }
                 )
 
+            max_len = len(marks[0]["mark_types"])
+            for i in range(1, len(marks)):
+                if len(marks[i]["mark_types"]) > max_len:
+                    max_len = len(marks[i]["mark_types"])
+
+    context["marks"] = marks
+    context["max_len"] = max_len
     context["form"] = form
     return render(request, "marks_and_results/marks.html", context=context)
 

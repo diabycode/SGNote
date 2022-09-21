@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>students/details</title>
+{% endblock %}
+
+{% block body_content %}
+    <h2>Details sur un étudient</h2>
+    <div>
+        <h3>Informations personnelles</h3>
+        <p>Nom: {{ student.last_name }}</p>
+        <p>Prénom: {{ student.first_name }}</p>
+        <p>Date de naissance: {{ student.birth }}</p>
+        <p>Facultée: {{ student.faculty }}</p>
+        <p>Spécialitée: {{ student.speciality }}</p>
+    </div>
+
+    <div>
+        <h3>Résultats</h3>
+        <form action="{% url 'students:students_details' student.pk %}" method="GET">
+            <select name="academic_year" id="id_academic_year"
+                hx-get="{% url 'marks_and_results:semester_dropdown' %}"
+                hx-trigger="change"
+                hx-target="#id_semester">
+                {% for academic_year in academic_years %}
+                    {% if academic_year == academic_year_selected %}
+                        <option value="{{ academic_year.pk }}" selected>{{ academic_year }}</option>
+                    {% else %}
+                        <option value="{{ academic_year.pk }}">{{ academic_year }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+
+            <select name="semester" id="id_semester">
+                {% for semester in semesters %}
+                    {% if semester == semester_selected %}
+                        <option value="{{ semester.pk }}" selected>{{ semester }}</option>
+                    {% else %}
+                        <option value="{{ semester.pk }}">{{ semester }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <input type="submit" value="valider">
+        </form>
+        {% if not max_len %}
+            <p>Aucun résultat trouvé</p>
+        {% else %}
+            <table border="1px">
+                <thead>
+                    <tr>
+                        <td>Matières</td>
+                        <td>Coéfficients</td>
+                        <td colspan="{{ max_len }}">Notes</td>
+                    </tr>
+                </thead>
+
+                {% for item in student_marks %}
+                    <tr>
+                        <td>{{ item.0 }}</td>
+                        <td>{{ item.0.coefficient }}</td>
+                        {% for mark in item.1 %}
+                            <td>{{ mark.mark_type }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
