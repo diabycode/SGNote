@@ -52,7 +52,6 @@ def students_marks(request):
 
 def add_marks(request):
     context = {"form": None}
-
     form = MarkCreaterForm()
     context["form"] = form
     return render(request, "marks_and_results/add_marks.html", context=context)
@@ -68,19 +67,14 @@ def marks_entering(request):
             context["form"] = form
             return render(request, "marks_and_results/add_marks.html", context=context)
 
-        faculty_selected = Faculty.objects.get(pk=request.POST["faculty"])
-        module_selected = Module.objects.get(pk=request.POST["module"])
-        lesson_selected = Lesson.objects.get(pk=request.POST["lesson"])
-        academic_year_selected = AcademicYear.objects.get(pk=request.POST["academic_year"])
-        semester_selected = Semester.objects.get(pk=request.POST["semester"])
+        mark_datas = form.cleaned_data
+        students = Student.objects.filter(faculty=mark_datas.get("faculty"))
 
-        students = Student.objects.filter(faculty=faculty_selected)
-
-        context["faculty_selected"] = faculty_selected
-        context["module_selected"] = module_selected
-        context["lesson_selected"] = lesson_selected
-        context["academic_year_selected"] = academic_year_selected
-        context["semester_selected"] = semester_selected
+        context["faculty_selected"] = mark_datas.get("faculty")
+        context["module_selected"] = mark_datas.get("module")
+        context["lesson_selected"] = mark_datas.get("lesson")
+        context["academic_year_selected"] = mark_datas.get("academic_year")
+        context["semester_selected"] = mark_datas.get("semester")
         context["students"] = students
 
         context["form"] = form
@@ -104,6 +98,9 @@ def marks_saving(request):
                 mark.lesson = lesson_selected
                 mark.semester = semester_selected
                 mark.academic_year = academic_year_selected
+
+                if request.POST.get("is_exam") == "True":
+                    mark.is_exam = True
 
                 mark.save()
             return redirect("marks_and_results:students_marks")

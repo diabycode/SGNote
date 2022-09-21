@@ -11,6 +11,7 @@ class Mark(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     semester = models.ForeignKey(Semester, on_delete=models.CASCADE, verbose_name="Semestre", null=True)
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
+    is_exam = models.BooleanField(null=True, default=False, verbose_name="Cochez si cela est une note d'examen")
 
     class Meta:
         verbose_name = "note"

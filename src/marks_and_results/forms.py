@@ -58,6 +58,8 @@ class MarkCreaterForm(DynamicFormMixin, forms.Form):
     def get_initial_semester(self):
         return Semester.objects.filter(academic_year=self["academic_year"].value()).last()
 
+    is_exam = forms.BooleanField(label="Cochez si cela est une note d'examen")
+
     faculty = forms.ModelChoiceField(
         queryset=Faculty.objects.all(),
         initial=Faculty.objects.first(),

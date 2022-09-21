@@ -12,6 +12,11 @@
     <form action="{% url 'marks_and_results:marks_entering' %}" method="POST">
         {% csrf_token %}
         <p>
+            {{ form.is_exam.label }}
+            {% render_field form.is_exam %}
+        </p>
+
+        <p>
             {{ form.faculty.label }}
             {% render_field form.faculty hx-get="/marks_and_results/module_dropdown/" hx-trigger="change" hx-target="#id_module" %}
         </p>
