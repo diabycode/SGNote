@@ -15,12 +15,8 @@ class SearchMarks(DynamicFormMixin, forms.Form):
     def get_semesters(self):
         return Semester.objects.filter(academic_year=self["academic_year"].value())
 
-    def get_initial_semester(self):
-        return Semester.objects.filter(academic_year=self["academic_year"].value()).last()
-
     faculty = forms.ModelChoiceField(
         queryset=Faculty.objects.all(),
-        initial=Faculty.objects.first()
     )
 
     module = DynamicField(
@@ -35,13 +31,11 @@ class SearchMarks(DynamicFormMixin, forms.Form):
 
     academic_year = forms.ModelChoiceField(
         queryset=AcademicYear.objects.all(),
-        initial=AcademicYear.objects.last()
     )
 
     semester = DynamicField(
         forms.ModelChoiceField,
         queryset=get_semesters,
-        initial=get_initial_semester,
     )
 
 
@@ -55,14 +49,10 @@ class MarkCreaterForm(DynamicFormMixin, forms.Form):
     def get_semesters(self):
         return Semester.objects.filter(academic_year=self["academic_year"].value())
 
-    def get_initial_semester(self):
-        return Semester.objects.filter(academic_year=self["academic_year"].value()).last()
-
-    is_exam = forms.BooleanField(label="Cochez si cela est une note d'examen")
+    is_exam = forms.BooleanField(label="Cochez si cela est une note d'examen", required=False)
 
     faculty = forms.ModelChoiceField(
         queryset=Faculty.objects.all(),
-        initial=Faculty.objects.first(),
     )
     module = DynamicField(
         forms.ModelChoiceField,
@@ -76,13 +66,11 @@ class MarkCreaterForm(DynamicFormMixin, forms.Form):
 
     academic_year = forms.ModelChoiceField(
         queryset=AcademicYear.objects.all(),
-        initial=AcademicYear.objects.last()
     )
 
     semester = DynamicField(
         forms.ModelChoiceField,
         queryset=get_semesters,
-        initial=get_initial_semester,
     )
 
 
