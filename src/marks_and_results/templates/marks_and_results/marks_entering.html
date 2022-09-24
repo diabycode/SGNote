@@ -33,7 +33,7 @@
                 <tr>
                     <td>{{ student.full_name }}</td>
                     <td>{{ student.pk }}</td>
-                    <td><input type="number" name="{{student.pk}}_mark"></td>
+                    <td><input type="number" step="any" min="0" name="{{student.pk}}_mark"></td>
                 </tr>
             {% endfor %}
         </table>
