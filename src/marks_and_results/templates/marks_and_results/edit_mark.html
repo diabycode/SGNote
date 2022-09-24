@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>edit_mark</title>
+{% endblock %}
+
+
+{% block body_content %}
+    <h2>Modifier une note</h2>
+    <form action="{% url 'marks_and_results:edit_mark' mark.pk %}" method="POST">
+        {% csrf_token %}
+        {{ mark.mark_type }}<br>
+        <input type="number" name="mark_type" required autofocus min="0" step="any">
+        <input type="submit" value="Modifier">
+    </form>
+
+{% endblock %}

@@ -21,7 +21,7 @@ def home(request):
     return render(request, "students/home.html", context=context)
 
 
-def q(request):
+def students_list(request):
     context = {
         "students": None,
 
