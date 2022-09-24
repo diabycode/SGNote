@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'students',
     'departements_and_modules',
     'marks_and_results',
+    'systems_and_levels',
 ]
 
 MIDDLEWARE = [
