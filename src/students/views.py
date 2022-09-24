@@ -21,7 +21,7 @@ def home(request):
     return render(request, "students/home.html", context=context)
 
 
-def students_list(request):
+def q(request):
     context = {
         "students": None,
 
@@ -44,35 +44,42 @@ def students_details(request, pk):
     context = {}
 
     student = get_object_or_404(Student, pk=pk)
-    student_faculty = student.faculty
-    student_faculty_modules = student_faculty.module_set.all()
-    student_faculty_lessons = []
-    for module in student_faculty_modules:
-        lessons = Lesson.objects.filter(module=module)
-        student_faculty_lessons.extend(lessons)
 
+    # all
     academic_years = AcademicYear.objects.all()
     semesters = Semester.objects.all()
 
-    if not request.GET:
-        academic_year = academic_years.last()
-        semesters = semesters.filter(academic_year=academic_year)
-        student_marks = Mark.objects.filter(student=student, academic_year=academic_year, semester=semesters.last())
-        context["academic_year_selected"] = academic_year
-        context["semester_selected"] = semesters.last()
-    else:
-        academic_year = academic_years.get(pk=request.GET.get("academic_year"))
-        semesters = semesters.filter(academic_year=academic_year)
+    # get request data
+    if request.GET:
+        request.session["academic_year_selected"] = request.GET.get("academic_year")
+        request.session["semester_selected"] = request.GET.get("semester")
 
-        semester = semesters.get(pk=request.GET.get("semester"))
+    # get academic_year
+    ac_pk = request.session.get("academic_year_selected", None)
+    academic_year_selected = get_object_or_404(AcademicYear, pk=ac_pk) if ac_pk else None
+    if not academic_year_selected:
+        academic_year_selected = academic_years.last()
+    semesters = semesters.filter(academic_year=academic_year_selected)
 
-        student_marks = Mark.objects.filter(student=student, academic_year=academic_year, semester=semester)
+    # get semester
+    sem_pk = request.session.get("semester_selected", None)
+    semester_selected = get_object_or_404(Semester, pk=sem_pk) if sem_pk else None
+    if not semester_selected:
+        semester_selected = semesters.last()
 
-        context["academic_year_selected"] = academic_year
-        context["semester_selected"] = semester
+    student_faculty_modules = student.faculty.module_set.all()
+    student_lessons = []
+    for module in student_faculty_modules:
+        lessons = Lesson.objects.filter(module=module)
+        student_lessons.extend(lessons)
 
+    student_marks = Mark.objects.filter(
+        student=student,
+        academic_year=academic_year_selected,
+        semester=semester_selected
+    )
     student_marks_mapped_lessons = []
-    for lesson in student_faculty_lessons:
+    for lesson in student_lessons:
         marks_mapped_lesson = (lesson, [m for m in student_marks.filter(lesson=lesson)])
         student_marks_mapped_lessons.append(marks_mapped_lesson)
 
@@ -83,9 +90,12 @@ def students_details(request, pk):
 
     context["student"] = student
     context["student_marks"] = student_marks_mapped_lessons
-    context["max_len"] = max_len
     context["academic_years"] = academic_years
     context["semesters"] = semesters
+    context["academic_year_selected"] = academic_year_selected
+    context["semester_selected"] = semester_selected
+    context["max_len"] = max_len
+
     return render(request, "students/students_details.html", context=context)
 
 
