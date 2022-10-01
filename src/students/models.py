@@ -2,17 +2,19 @@ from datetime import datetime
 
 import django
 from django.db import models
-from django.utils.text import slugify
 
 from departements_and_modules.models import Faculty, Speciality, Lesson
+from systems_and_levels.models import Level
 
 
 class Student(models.Model):
-    faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True)
-    speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True)
-
+    faculty = models.ForeignKey(Faculty, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Facultée")
+    speciality = models.ForeignKey(Speciality, on_delete=models.SET_NULL, null=True, blank=True,
+                                   verbose_name="Spécialitée")
+    actual_level = models.ForeignKey(Level, on_delete=models.SET_NULL, blank=True, null=True,
+                                     verbose_name="Niveau actuel")
     matricule = models.CharField(max_length=255, primary_key=True, unique=True, verbose_name="Matricule")
-    first_name = models.CharField(max_length=150, verbose_name="Prenom")
+    first_name = models.CharField(max_length=150, verbose_name="Prénom")
     last_name = models.CharField(max_length=150, verbose_name="Nom")
     birth = models.DateField(verbose_name="Naissance", blank=True, null=True)
 
@@ -50,8 +52,9 @@ class Student(models.Model):
     def _get_lesson_exam_mark(self, lesson, semester, academic_year, to_float=False):
         marks = self.get_marks(lesson=lesson, semester=semester, academic_year=academic_year)
         if marks:
-            exam_mark = marks.get(is_exam=True)
+            exam_mark = marks.filter(is_exam=True)
             if exam_mark:
+                exam_mark = exam_mark[0]
                 if to_float:
                     exam_mark = float(exam_mark.mark_type)
                 return exam_mark
