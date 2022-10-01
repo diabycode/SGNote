@@ -4,17 +4,14 @@
     <title>students/faculty</title>
 {% endblock %}
 
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
 
 {% block body_content %}
     <h3>Facultés</h3>
 
     <h4> AJoutez une nouvelle faculté </h4>
-    <form action="{% url 'departements_and_modules:students_faculties' %}" method="POST">
-        {% csrf_token %}
-        {{ add_form }}
-        <input type="submit" value="Ajouter">
-    </form>
-    <br>
 
     <table border="1px">
         <tr class="table-head">

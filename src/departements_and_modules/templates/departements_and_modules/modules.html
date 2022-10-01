@@ -4,17 +4,14 @@
     <title>students/modules</title>
 {% endblock %}
 
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
 
 {% block body_content %}
     <h3>Modules</h3>
 
     <h4> AJoutez un module </h4>
-    <form action="{% url 'departements_and_modules:students_modules' %}" method="POST">
-        {% csrf_token %}
-        {{ add_form }}
-        <input type="submit" value="Ajouter">
-    </form>
-    <br>
 
     <table border="1px">
         <tr class="table-head">
