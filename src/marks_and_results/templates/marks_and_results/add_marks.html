@@ -9,12 +9,18 @@
 
 {% block body_content %}
     <h2>Saisir des notes</h2>
-    <form action="{% url 'marks_and_results:marks_entering' %}" method="POST">
+    <form action="{% url 'marks_and_results:add_marks' %}" method="POST">
+
         {% csrf_token %}
         <p>
             {{ form.is_exam.label }}
             {% render_field form.is_exam %}
         </p>
+        {% if exam_mark_already_exist %}
+            <p>
+                {{ exam_mark_already_exist }}
+            </p>
+        {% endif %}
 
         <p>
             {{ form.faculty.label }}

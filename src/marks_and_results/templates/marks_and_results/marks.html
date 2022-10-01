@@ -5,6 +5,9 @@
     <title>students/marks</title>
 {% endblock %}
 
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
 
 {% block body_content %}
     <h3>Notes des étudiants</h3>
@@ -14,6 +17,29 @@
 
     <h4>Rechercher</h4>
     <form action="{% url 'marks_and_results:students_marks' %}" method="GET">
+
+        <label for="id_academic_year">Année scolaire</label>
+        <select name="academic_year" id="id_academic_year"
+            hx-get="{% url 'marks_and_results:semester_dropdown' %}" hx-trigger="change" hx-target="#id_semester">
+            {% for academic_year in academic_years %}
+                {% if academic_year == academic_year_selected %}
+                    <option value="{{ academic_year.pk }}" selected> {{ academic_year }}</option>
+                {% else %}
+                    <option value="{{ academic_year.pk }}"> {{ academic_year }}</option>
+                {% endif %}
+            {% endfor %}
+        </select> <br>
+
+        <label for="id_semester">Semestre</label>
+        <select name="semester" id="id_semester">
+            {% for semester in semesters %}
+                {% if semester == semester_selected %}
+                    <option value="{{ semester.pk }}" selected> {{ semester }}</option>
+                {% else %}
+                    <option value="{{ semester.pk }}"> {{ semester }}</option>
+                {% endif %}
+            {% endfor %}
+        </select> <br><br>
 
         <select name="faculty" id="id_faculty"
             hx-get="{% url 'marks_and_results:module_dropdown' %}" hx-trigger="change" hx-target="#id_module">
@@ -47,26 +73,7 @@
             {% endfor %}
         </select>
 
-        <select name="academic_year" id="id_academic_year"
-            hx-get="{% url 'marks_and_results:semester_dropdown' %}" hx-trigger="change" hx-target="#id_semester">
-            {% for academic_year in academic_years %}
-                {% if academic_year == academic_year_selected %}
-                    <option value="{{ academic_year.pk }}" selected> {{ academic_year }}</option>
-                {% else %}
-                    <option value="{{ academic_year.pk }}"> {{ academic_year }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
 
-        <select name="semester" id="id_semester">
-            {% for semester in semesters %}
-                {% if semester == semester_selected %}
-                    <option value="{{ semester.pk }}" selected> {{ semester }}</option>
-                {% else %}
-                    <option value="{{ semester.pk }}"> {{ semester }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
 
         <input type="submit" value="valider">
     </form>
@@ -80,9 +87,11 @@
                     <td>N°</td>
                     <td>Nom et prénom</td>
                     <td colspan="{{max_len}}">Notes de classe</td>
-                    <td>Note d'examen</td>
                     <td>Moyenne de classe</td>
-                    <td>Moyenne sémestrielle</td>
+                    {% if is_exam_mark_exist %}
+                        <td>Note d'examen</td>
+                        <td>Moyenne sémestrielle</td>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -93,12 +102,14 @@
                         {% for m in mark.marks %}
                             <td> {{ m.mark_type }} <br> <a href="{% url 'marks_and_results:edit_mark' m.pk %}">modifier</a></td>
                         {% endfor %}
-                        <td>
-                            {{ mark.exam_mark.mark_type }} <br>
-                            <a href="{% url 'marks_and_results:edit_mark' mark.exam_mark.pk %}">modifier</a>
-                        </td>
                         <td>{{ mark.lesson_class_mean|floatformat:2 }}</td>
-                        <td>{{ mark.semester_mean|floatformat:2 }}</td>
+                        {% if is_exam_mark_exist %}
+                            <td>
+                                {{ mark.exam_mark.mark_type }} <br>
+                                <a href="{% url 'marks_and_results:edit_mark' mark.exam_mark.pk %}">modifier</a>
+                            </td>
+                            <td>{{ mark.semester_mean|floatformat:2 }}</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
