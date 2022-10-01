@@ -4,6 +4,9 @@
     <title>students/list</title>
 {% endblock %}
 
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
 
 {% block body_content %}
     <h3>Students</h3>

@@ -4,6 +4,10 @@
     <title>students/details</title>
 {% endblock %}
 
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
+
 {% block body_content %}
     <h2>Details sur un étudient</h2>
     <div>
@@ -59,7 +63,12 @@
                         <td>{{ item.0 }}</td>
                         <td>{{ item.0.coefficient }}</td>
                         {% for mark in item.1 %}
-                            <td>{{ mark.mark_type }}</td>
+                            <td>
+                                {{ mark.mark_type }}
+                                {% if mark.is_exam %} <br>
+                                    <b>ex</b>
+                                {% endif %}
+                            </td>
                         {% endfor %}
                     </tr>
                 {% endfor %}
