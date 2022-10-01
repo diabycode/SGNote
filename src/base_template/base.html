@@ -8,15 +8,24 @@
     <script src="https://unpkg.com/htmx.org@1.8.0" integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>SGNote</h1>
+    <h1><a href="{% url 'index' %}">SGNote</a></h1>
+
+    <div class="period_selection">
+        {% block now_academic_year %}
+
+        {% endblock %}
+    </div>
+
     {% if user.is_authenticated %}
         <div class="user-profile">
             <h4>{{ user.username }}</h4>
+            <p><a href="{% url 'admin:index' %}">Administrer le site</a></p>
             <a href="{% url 'accounts:logout' %}"> Déconnexion </a>
         </div>
 
         <div class="menu">
             <ul>
+                <li><a href="{% url 'index' %}">Accueil</a></li>
                 <li> Départements
                     <ul>
                         <li><a href="{% url 'departements_and_modules:students_faculties' %}"> Facultés </a> </li>
