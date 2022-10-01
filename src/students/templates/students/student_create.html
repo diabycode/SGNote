@@ -23,6 +23,16 @@
         </p>
 
         <p>
+            {{ form.system.label }}
+            {% render_field form.system hx-get="/students/level_dropdown/" hx-target="#id_level" hx-trigger="change" %}
+        </p>
+
+        <p>
+            {{ form.level.label }}
+            {% render_field form.level %}
+        </p>
+
+        <p>
             {{ form.matricule.label }}
             {% render_field form.matricule %}
         </p>
