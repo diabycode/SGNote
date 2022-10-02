@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -16,17 +17,14 @@ from .forms import *
 from .models import *
 
 
-def home(request):
-    context = {}
-    return render(request, "students/home.html", context=context)
-
-
+@login_required()
 def students_list(request):
     context = {
         "students": None,
 
         "all_faculties": Faculty.objects.all(),
         "faculty_selected": None,
+        "now_academic_year": AcademicYear.objects.get(is_now_academic_year=True),
     }
     students = Student.objects.all()
 
@@ -40,8 +38,11 @@ def students_list(request):
     return render(request, "students/list.html", context=context)
 
 
+@login_required()
 def students_details(request, pk):
-    context = {}
+    context = {
+        "now_academic_year": AcademicYear.objects.get(is_now_academic_year=True),
+    }
 
     student = get_object_or_404(Student, pk=pk)
 
@@ -73,11 +74,12 @@ def students_details(request, pk):
         lessons = Lesson.objects.filter(module=module)
         student_lessons.extend(lessons)
 
-    student_marks = Mark.objects.filter(
+    student_marks = Mark.objects.order_by("is_exam").filter(
         student=student,
         academic_year=academic_year_selected,
-        semester=semester_selected
+        semester=semester_selected,
     )
+
     student_marks_mapped_lessons = []
     for lesson in student_lessons:
         marks_mapped_lesson = (lesson, [m for m in student_marks.filter(lesson=lesson)])
@@ -100,6 +102,7 @@ def students_details(request, pk):
 
 
 # created views
+@login_required()
 def student_create_view(request):
     context = {}
 
@@ -123,8 +126,18 @@ def student_create_view(request):
     return render(request, "students/student_create.html", context=context)
 
 
+@login_required()
 def specialities_dropdown(request):
     if request.GET["faculty"]:
         form = StudentCreateForm(request.GET)
         return HttpResponse(form["speciality"])
     return HttpResponse('<option value="" selected>---------</option>')
+
+
+@login_required()
+def level_dropdown(request):
+    if request.GET["system"]:
+        form = StudentCreateForm(request.GET)
+        return HttpResponse(form["level"])
+    return HttpResponse('<option value="" selected>---------</option>')
+
