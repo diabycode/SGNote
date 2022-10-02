@@ -61,7 +61,10 @@ ROOT_URLCONF = 'sg_note.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/"base_template"],
+        'DIRS': [
+            BASE_DIR/"base_template",
+            BASE_DIR/"sg_note"/"templates",
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
