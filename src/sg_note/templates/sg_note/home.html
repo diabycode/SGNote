@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
+
+{% block body_content %}
+    <h2>Tableau de bord</h2>
+    <p>Nombre d'étudiants: {{ nb_students }}</p>
+    <p>Nombre de facultés: {{ nb_faculties }}</p>
+    <p>Nombre de spécialités: {{ nb_specialities }}</p>
+    <p>Nombre de modules: {{ nb_modules }}</p>
+    <p>Nombre de matières: {{ nb_lessons }}</p>
+
+{% endblock %}

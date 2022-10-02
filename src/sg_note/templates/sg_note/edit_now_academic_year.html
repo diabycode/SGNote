@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>edit-now-academic-year</title>
+</head>
+<body>
+    <h2>L'actuelle anneé scolaire</h2>
+    <form action="{% url 'edit_now_academic_year' %}" method="POST">
+        {% csrf_token %}
+        <select name="now_academic_year" id="edit_now_academic_year">
+            {% for academic_year in academic_years %}
+                {% if academic_year == now_academic_year %}
+                    <option value="{{academic_year.pk}}" selected>{{ academic_year }}</option>
+                {% else %}
+                    <option value="{{academic_year.pk}}">{{ academic_year }}</option>
+                {% endif %}
+            {% endfor %} <br>
+            <input type="submit" value="Selectionner">
+        </select>
+    </form>
+</body>
+</html>
