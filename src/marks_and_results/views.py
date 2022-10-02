@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -8,6 +9,7 @@ from .models import Mark
 from students.models import Student
 
 
+@login_required()
 def students_marks(request):
     context = {
         "marks": [],
@@ -53,7 +55,7 @@ def students_marks(request):
     academic_year_pk = request.session.get("mark_academic_year_selected", None)
     academic_year_selected = academic_years.get(pk=academic_year_pk) if academic_year_pk else None
     if not academic_year_selected:
-        academic_year_selected = academic_years.last()
+        academic_year_selected = academic_years.get(is_now_academic_year=True)
 
     semesters = semesters.filter(academic_year=academic_year_selected)
     semester_pk = request.session.get("mark_semester_selected", None)
@@ -63,7 +65,6 @@ def students_marks(request):
 
     students = Student.objects.all()
     marks = []
-    max_len = 0
     students = students.filter(faculty=faculty_selected)
     for student in students:
         s_marks = Mark.objects.filter(
@@ -72,15 +73,13 @@ def students_marks(request):
             academic_year=academic_year_selected,
             semester=semester_selected,
         )
+        exam_mark = s_marks.get(is_exam=True) if s_marks.filter(is_exam=True) else None
+
         marks.append(
             {
                 "student": student,
                 "marks": [m for m in s_marks.filter(is_exam=False)],
-                "exam_mark": student.get_lesson_exam_mark(
-                    lesson=lesson_selected,
-                    semester=semester_selected,
-                    academic_year=academic_year_selected
-                ),
+                "exam_mark": exam_mark,
                 "lesson_class_mean": student.get_class_mean(
                     lesson=lesson_selected,
                     semester=semester_selected,
@@ -100,6 +99,8 @@ def students_marks(request):
 
     context["marks"] = marks
     context["max_len"] = max_len
+    # "exam_mark": exam_mark,
+    context["is_exam_mark_exist"] = True if marks[0]["exam_mark"] else None
 
     context["faculties"] = faculties
     context["modules"] = modules
@@ -113,60 +114,92 @@ def students_marks(request):
     context["academic_year_selected"] = academic_year_selected
     context["semester_selected"] = semester_selected
 
+    context["now_academic_year"] = academic_years.get(is_now_academic_year=True)
+
     return render(request, "marks_and_results/marks.html", context=context)
 
 
+@login_required()
 def add_marks(request):
     context = {"form": None}
+    if request.method == "POST":
+        # get data
+        form = MarkCreaterForm(request.POST)
 
-    faculty = None
-    module = None
-    lesson = None
-    academic_year = None
-    semester = None
-    if request.session.get("mark_falculty_selected"):
-        faculty = get_object_or_404(Faculty, pk=request.session.get("mark_falculty_selected"))
-        module = get_object_or_404(Module, pk=request.session.get("mark_module_selected"))
-        lesson = get_object_or_404(Lesson, pk=request.session.get("mark_lesson_selected"))
-        academic_year = get_object_or_404(AcademicYear, pk=request.session.get("mark_academic_year_selected"))
-        semester = get_object_or_404(Semester, pk=request.session.  get("mark_semester_selected"))
+        # verifications
+        if form.is_valid():
+            # data cleaned
+            data_cleaned = form.cleaned_data
 
-    initial = {
-        "faculty": faculty,
-        "module": module,
-        "lesson": lesson,
-        "academic_year": academic_year,
-        "semester": semester,
-    }
-    form = MarkCreaterForm(initial=initial)
+            # if is an exam mark
+            if data_cleaned.get("is_exam"):
+                exam_marks = Mark.objects.filter(
+                    lesson=get_object_or_404(Lesson, pk=data_cleaned["lesson"].pk),
+                    academic_year=get_object_or_404(AcademicYear, pk=data_cleaned["academic_year"].pk),
+                    semester=get_object_or_404(Semester, pk=data_cleaned["semester"].pk),
+                    is_exam=True
+                )
+                # if exam mark already exist
+                if exam_marks:
+                    context["form"] = form
+                    context["exam_mark_already_exist"] = "Cette faculté dispose déjà d'une note d'examen"
+                    return render(request, "marks_and_results/add_marks.html", context=context)
+            # put datas in session and redirection
+            request.session["mark_falculty_selected"] = data_cleaned.get("faculty").pk
+            request.session["mark_module_selected"] = data_cleaned.get("module").pk
+            request.session["mark_lesson_selected"] = data_cleaned.get("lesson").pk
+            request.session["mark_academic_year_selected"] = data_cleaned.get("academic_year").pk
+            request.session["mark_semester_selected"] = data_cleaned.get("semester").pk
+            request.session["mark_is_exam"] = data_cleaned.get("is_exam")
+            return redirect("marks_and_results:marks_entering")
+
+    else:
+        initial = {}
+        if request.session.get("mark_falculty_selected"):
+            initial = {
+                "faculty": get_object_or_404(Faculty, pk=request.session.get("mark_falculty_selected")),
+                "module": get_object_or_404(Module, pk=request.session.get("mark_module_selected")),
+                "lesson": get_object_or_404(Lesson, pk=request.session.get("mark_lesson_selected")),
+                "academic_year": get_object_or_404(AcademicYear, pk=request.session.get("mark_academic_year_selected")),
+                "semester": get_object_or_404(Semester, pk=request.session.get("mark_semester_selected")),
+            }
+
+        form = MarkCreaterForm(initial=initial)
+
     context["form"] = form
     return render(request, "marks_and_results/add_marks.html", context=context)
 
 
+@login_required()
 def marks_entering(request):
     context = {}
-    if not request.method == "POST":
-        return redirect("marks_and_results:add_marks")
-    else:
-        form = MarkCreaterForm(request.POST)
-        if not form.is_valid():
-            context["form"] = form
-            return render(request, "marks_and_results/add_marks.html", context=context)
 
-        mark_datas = form.cleaned_data
-        students = Student.objects.filter(faculty=mark_datas.get("faculty"))
+    # getting datas
+    initial = {
+        "faculty": get_object_or_404(Faculty, pk=request.session.get("mark_falculty_selected")),
+        "module": get_object_or_404(Module, pk=request.session.get("mark_module_selected")),
+        "lesson": get_object_or_404(Lesson, pk=request.session.get("mark_lesson_selected")),
+        "academic_year": get_object_or_404(AcademicYear, pk=request.session.get("mark_academic_year_selected")),
+        "semester": get_object_or_404(Semester, pk=request.session.get("mark_semester_selected")),
+        "is_exam": request.session.get("mark_is_exam"),
+    }
 
-        context["faculty_selected"] = mark_datas.get("faculty")
-        context["module_selected"] = mark_datas.get("module")
-        context["lesson_selected"] = mark_datas.get("lesson")
-        context["academic_year_selected"] = mark_datas.get("academic_year")
-        context["semester_selected"] = mark_datas.get("semester")
-        context["students"] = students
+    form = MarkCreaterForm(initial=initial)
 
-        context["form"] = form
+    students = Student.objects.filter(faculty=initial["faculty"])
+
+    context["faculty_selected"] = initial["faculty"]
+    context["module_selected"] = initial["module"]
+    context["lesson_selected"] = initial["lesson"]
+    context["academic_year_selected"] = initial["academic_year"]
+    context["semester_selected"] = initial["semester"]
+    context["students"] = students
+
+    context["form"] = form
     return render(request, "marks_and_results/marks_entering.html", context=context)
 
 
+@login_required()
 def marks_saving(request):
     if request.method == "POST":
 
@@ -192,6 +225,7 @@ def marks_saving(request):
             return redirect("marks_and_results:students_marks")
 
 
+@login_required()
 def edit_mark(request, pk):
     context = {}
     mark = get_object_or_404(Mark, pk=pk)
@@ -203,6 +237,7 @@ def edit_mark(request, pk):
     return render(request, "marks_and_results/edit_mark.html", context=context)
 
 
+@login_required()
 def module_dropdown(request):
     if request.GET["faculty"]:
         form = SearchMarks(request.GET)
@@ -210,6 +245,7 @@ def module_dropdown(request):
     return HttpResponse('<option value="" selected>---------</option>')
 
 
+@login_required()
 def lesson_dropdown(request):
     if request.GET["module"]:
         form = SearchMarks(request.GET)
@@ -217,6 +253,7 @@ def lesson_dropdown(request):
     return HttpResponse('<option value="" selected>---------</option>')
 
 
+@login_required()
 def semester_dropdown(request):
     if request.GET["academic_year"]:
         form = SearchMarks(request.GET)
