@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 import django.contrib.auth.views
 
-from .views import index
+from .views import index, edit_now_academic_year
 
 urlpatterns = [
     path('', index, name='index'),
+    path('edit_now_academic_year', edit_now_academic_year, name='edit_now_academic_year'),
     path('accounts/', include('accounts.urls')),
     path('students/', include('students.urls')),
     path('departs_and_mod/', include('departements_and_modules.urls')),
