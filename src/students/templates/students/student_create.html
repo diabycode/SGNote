@@ -13,39 +13,43 @@
 
         {% csrf_token %}
         <p>
-            {{ form.faculty.label }}
+            {{ form.faculty.label_tag }}
             {% render_field form.faculty hx-get="/students/specialities_dropdown/" hx-target="#id_speciality" hx-trigger="change" %}
         </p>
 
         <p>
-            {{ form.speciality.label }}
+            {{ form.speciality.label_tag }}
             {% render_field form.speciality %}
         </p>
 
         <p>
-            {{ form.system.label }}
+            {{ form.system.label_tag }}
             {% render_field form.system hx-get="/students/level_dropdown/" hx-target="#id_level" hx-trigger="change" %}
         </p>
 
         <p>
-            {{ form.level.label }}
+            {{ form.level.label_tag }}
             {% render_field form.level %}
         </p>
 
         <p>
-            {{ form.matricule.label }}
+            {{ form.matricule.label_tag }}
             {% render_field form.matricule %}
         </p>
         <p>
-            {{ form.first_name.label }}
+            {{ form.first_name.label_tag }}
             {% render_field form.first_name %}
         </p>
         <p>
-            {{ form.last_name.label }}
+            {{ form.last_name.label_tag }}
             {% render_field form.last_name %}
         </p>
         <p>
-            {{ form.birth.label }}
+            {{ form.gender.label_tag }}
+            {% render_field form.gender %}
+        </p>
+        <p>
+            {{ form.birth.label_tag }}
             {% render_field form.birth %}
         </p>
 
