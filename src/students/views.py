@@ -26,15 +26,20 @@ def students_list(request):
         "faculty_selected": None,
         "now_academic_year": AcademicYear.objects.get(is_now_academic_year=True),
     }
-    students = Student.objects.all()
+    all_students = Student.objects.all()
+    faculty_selected = None
 
     if request.method == "POST":
-        if request.POST["faculty"] != "__all__":
-            students = students.filter(faculty=get_object_or_404(Faculty, slug=request.POST["faculty"]))
+        # edit faculty selected in session
+        request.session["students_list__faculty_selected"] = request.POST.get("faculty")
 
-            context["faculty_selected"] = get_object_or_404(Faculty, slug=request.POST["faculty"])
+    if request.session.get("students_list__faculty_selected"):
+        if request.session.get("students_list__faculty_selected") != "__all__":
+            faculty_selected = get_object_or_404(Faculty, pk=request.session.get("students_list__faculty_selected"))
+            all_students = all_students.filter(faculty=faculty_selected)
 
-    context["students"] = students
+    context["students"] = all_students
+    context["faculty_selected"] = faculty_selected
     return render(request, "students/list.html", context=context)
 
 
@@ -124,6 +129,49 @@ def student_create_view(request):
 
     context["form"] = form
     return render(request, "students/student_create.html", context=context)
+
+
+@login_required()
+def student_edit(request, pk):
+    context = {}
+    student = get_object_or_404(Student, pk=pk)
+
+    if request.method == "POST":
+        form = StudentCreateForm(request.POST)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            print(data)
+            print()
+
+            student.faculty = data.get("faculty")
+            student.speciality = data.get("speciality")
+            student.actual_level = data.get("level")
+            student.matricule = data.get("matricule")
+            student.first_name = data.get("first_name")
+            student.last_name = data.get("last_name")
+            student.gender = data.get("gender")
+            student.birth = data.get("birth")
+
+            student.save()
+            return redirect("students:students_list")
+    else:
+        initial = {
+            "faculty": student.faculty,
+            "speciality": student.speciality,
+            "level": student.actual_level,
+            "system": student.actual_level.system if student.actual_level else None,
+            "matricule": student.matricule,
+            "first_name": student.first_name,
+            "last_name": student.last_name,
+            "gender": student.gender,
+            "birth": student.birth
+        }
+        form = StudentCreateForm(initial=initial)
+
+    context["form"] = form
+    context["student"] = student
+    return render(request, "students/student_edit.html", context=context)
 
 
 @login_required()
