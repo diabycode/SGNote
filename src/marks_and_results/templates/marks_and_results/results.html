@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+    <title>students/marks</title>
+{% endblock %}
+
+{% block now_academic_year %}
+    <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>
+{% endblock %}
+
+{% block body_content %}
+    <h3>Résultats</h3>
+    <div>
+        <table cellspacing="10px">
+            <thead>
+                <tr>
+                    <td><b><i>Facultté</i></b></td>
+                    <td><b><i>Module</i></b></td>
+                    <td><b><i>Matière</i></b></td>
+                    <td><b><i>Année scolaire</i></b></td>
+                    <td><b><i>Semestre</i></b></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ faculty_selected }}</td>
+                    <td>{{ module_selected }}</td>
+                    <td>{{ lesson_selected }}</td>
+                    <td>{{ academic_year_selected }}</td>
+                    <td>{{ semester_selected }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    {% if max_len %}
+        <table border=".5px" id="students_marks">
+            <thead>
+                <tr>
+                    <td>N°</td>
+                    <td>Nom et prénom</td>
+                    <td>Moyenne de classe</td>
+                    <td>Moyenne de classe</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mark in marks %}
+                    <tr>
+                        <td> {{ forloop.counter }} </td>
+                        <td> {{ mark.student }} </td>
+                        {% for m in mark.marks %}
+                            <td>
+                                {{ m.mark_type }} <br>
+                                {% if m.is_exam %}
+                                    ex <br>
+                                {% endif %}
+                                <a href="{% url 'marks_and_results:edit_mark' m.pk %}">modifier</a>
+                            </td>
+
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+
+        <p>Aucunn résultats trouvé</p>
+
+    {% endif %}
+
+{% endblock %}
