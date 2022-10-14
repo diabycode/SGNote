@@ -73,25 +73,21 @@
             {% endfor %}
         </select>
 
-
-
         <input type="submit" value="valider">
     </form>
     <br>
     <br>
 
     {% if max_len %}
+        <p>
+            <a href="{% url 'marks_and_results:results' %}">Afficher les résultats</a>
+        </p>
         <table border=".5px" id="students_marks">
             <thead>
                 <tr>
                     <td>N°</td>
                     <td>Nom et prénom</td>
                     <td colspan="{{max_len}}">Notes de classe</td>
-                    <td>Moyenne de classe</td>
-                    {% if is_exam_mark_exist %}
-                        <td>Note d'examen</td>
-                        <td>Moyenne sémestrielle</td>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -100,16 +96,15 @@
                         <td> {{ forloop.counter }} </td>
                         <td> {{ mark.student }} </td>
                         {% for m in mark.marks %}
-                            <td> {{ m.mark_type }} <br> <a href="{% url 'marks_and_results:edit_mark' m.pk %}">modifier</a></td>
-                        {% endfor %}
-                        <td>{{ mark.lesson_class_mean|floatformat:2 }}</td>
-                        {% if is_exam_mark_exist %}
                             <td>
-                                {{ mark.exam_mark.mark_type }} <br>
-                                <a href="{% url 'marks_and_results:edit_mark' mark.exam_mark.pk %}">modifier</a>
+                                {{ m.mark_type }} <br>
+                                {% if m.is_exam %}
+                                    ex <br>
+                                {% endif %}
+                                <a href="{% url 'marks_and_results:edit_mark' m.pk %}">modifier</a>
                             </td>
-                            <td>{{ mark.semester_mean|floatformat:2 }}</td>
-                        {% endif %}
+
+                        {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
