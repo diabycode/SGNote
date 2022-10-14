@@ -75,8 +75,21 @@ class Speciality(models.Model):
         super(Speciality, self).save(*args, **kwargs)
 
 
+class Semester(models.Model):
+    semester_number = models.IntegerField()
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = "semestre"
+
+    def __str__(self):
+        return f"semestre {self.semester_number}"
+
+
 class Module(models.Model):
-    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, verbose_name="Facultée")
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, verbose_name="Facultée", blank=True)
+    academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True, verbose_name="Année scolaire")
+    semester = models.ForeignKey(Semester, on_delete=models.SET_NULL, null=True, verbose_name="Semestre", blank=True)
     name = models.CharField(max_length=100, verbose_name="Nom", unique=True)
     slug = models.SlugField(max_length=130, blank=True, null=True)
 
@@ -114,13 +127,4 @@ class Lesson(models.Model):
         super(Lesson, self).save(*args, **kwargs)
 
 
-class Semester(models.Model):
-    semester_number = models.IntegerField()
-    academic_year = models.ForeignKey(AcademicYear, on_delete=models.SET_NULL, null=True)
-
-    class Meta:
-        verbose_name = "semestre"
-
-    def __str__(self):
-        return f"semestre {self.semester_number}"
 
