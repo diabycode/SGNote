@@ -1,0 +1,37 @@
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>create module</title>
+    <script src="https://unpkg.com/htmx.org@1.8.0" integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc" crossorigin="anonymous"></script>
+</head>
+<body>
+    <h2>Ajouter un nouveau modules</h2>
+    <form action="{% url 'departements_and_modules:create_modules' %}" method="POST">
+        {% csrf_token %}
+        <p>
+            {{ form.name.label_tag }}
+            {% render_field form.name %}
+        </p>
+        <p>
+            {{ form.faculty.label_tag }}
+            {% render_field form.faculty %}
+        </p>
+
+        <p>
+            {{ form.academic_year.label_tag }}
+            {% render_field form.academic_year hx-get="/marks_and_results/semester_dropdown/" hx-target="#id_semester" hx-trigger="change"%}
+        </p>
+
+        <p>
+            {{ form.semester.label_tag }}
+            {% render_field form.semester %}
+        </p>
+
+        <input type="submit" value="Enrégistrer">
+    </form>
+
+</body>
+</html>

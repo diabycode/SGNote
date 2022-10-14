@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+from .forms import ModuleCreateForm, FacultyCreateForm, SpecilityCreateForm, LessonCreateForm
 from .models import Faculty, Module, Lesson, Speciality, AcademicYear
 
 
@@ -38,4 +39,67 @@ def students_specialities(request):
         "now_academic_year": AcademicYear.objects.get(is_now_academic_year=True)
     }
     return render(request, "departements_and_modules/specialities.html", context=context)
+
+
+# ---------- Create views ---------------------
+
+@login_required()
+def create_faculties(request):
+    context = {}
+    if request.method == "POST":
+        form = FacultyCreateForm(request.POST)
+        print(request.POST)
+    else:
+        form = FacultyCreateForm()
+
+    context["form"] = form
+    return render(request,  "departements_and_modules/create_faculties.html", context=context)
+
+
+@login_required()
+def create_specialities(request):
+    context = {}
+    if request.method == "POST":
+        form = SpecilityCreateForm(request.POST)
+        print(request.POST)
+    else:
+        form = SpecilityCreateForm()
+
+    context["form"] = form
+    return render(request,  "departements_and_modules/create_specialities.html", context=context)
+
+
+@login_required()
+def create_modules(request):
+    context = {}
+    if request.method == "POST":
+        form = ModuleCreateForm(request.POST)
+        if form.is_valid():
+            datas = form.cleaned_data
+            module = Module()
+            module.name = datas.get("name")
+            module.faculty = datas.get("faculty")
+            module.academic_year = datas.get("academic_year")
+            module.semester = datas.get("semester")
+
+            module.save()
+            return redirect("departements_and_modules:students_modules")
+    else:
+        form = ModuleCreateForm()
+
+    context['form'] = form
+    return render(request, "departements_and_modules/create_modules.html", context=context)
+
+
+@login_required()
+def create_lessons(request):
+    context = {}
+    if request.method == "POST":
+        form = LessonCreateForm(request.POST)
+        print(request.POST)
+    else:
+        form = LessonCreateForm()
+
+    context["form"] = form
+    return render(request,  "departements_and_modules/create_lessons.html", context=context)
 

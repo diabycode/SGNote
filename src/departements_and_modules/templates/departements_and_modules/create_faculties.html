@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>create module</title>
+<!--    <script src="https://unpkg.com/htmx.org@1.8.0" integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc" crossorigin="anonymous"></script>-->
+</head>
+<body>
+    <h2>Ajouter une nouvelle facultée</h2>
+    <form action="{% url 'departements_and_modules:create_faculties' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <input type="submit" value="Enrégistrer">
+    </form>
+
+</body>
+</html>
