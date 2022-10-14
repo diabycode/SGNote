@@ -10,14 +10,9 @@
 
 {% block body_content %}
     <h3>Specialités</h3>
-
-    <h4> AJoutez une nouvelle spécialité </h4>
-<!--    <form action="{% url 'departements_and_modules:students_specialities' %}" method="POST">-->
-<!--        {% csrf_token %}-->
-<!--        {{ add_form }}-->
-<!--        <input type="submit" value="Ajouter">-->
-<!--    </form>-->
-<!--    <br>-->
+    <h4>
+        <a href="{% url 'departements_and_modules:create_specialities' %}">Ajoutez une spécialité</a>
+    </h4>
 
     <table border="1px">
         <tr class="table-head">
