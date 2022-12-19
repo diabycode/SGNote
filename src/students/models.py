@@ -3,7 +3,7 @@ from datetime import datetime
 import django
 from django.db import models
 
-from departements_and_modules.models import Faculty, Speciality, Lesson
+from departements_and_modules.models import Faculty, Speciality, Lesson, Module
 from systems_and_levels.models import Level
 
 
@@ -74,10 +74,25 @@ class Student(models.Model):
         return semester_mean
 
     def _get_semester_mean(self, semester):
-        pass
+        get_semester_mean = None
+
+        # modules = Module.objects.filter(semester=semester)
+        # lessons = []
+        # for module in modules:
+        #     lessons.append(Lesson.objects.filter(module=module))
+        #
+        # lesson_semester_means = []
+        # if lessons:
+        #     for lesson in lessons:
+        #         lesson_semester_mean = self._get_a_lesson_semester_mean(lesson, semester)
+        #         lesson_semester_means.append(lesson_semester_mean)
+        #     if lesson_semester_means:
+        #         total = sum(lesson_semester_means)
+        #         get_semester_mean = total/len(lesson_semester_means)
+        return get_semester_mean
 
     def _get_annual_mean(self, academic_year):
-        pass
+        return None
 
     def get_marks(self, lesson=None, semester=None, academic_year=None):
         return self._get_marks(lesson=lesson, semester=semester, academic_year=academic_year)

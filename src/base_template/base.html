@@ -8,57 +8,76 @@
     <script src="https://unpkg.com/htmx.org@1.8.0" integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1><a href="{% url 'index' %}">SGNote</a></h1>
+    <div class="header">
+        <h1 class="logo">
+            <a href="{% url 'index' %}">SGNote</a>
+        </h1>
+        <div class="right">
+            {% if user.is_authenticated %}
+                <p><a href="{% url 'admin:index' %}">Administrer le site</a></p>
+            {% endif %}
 
-    <div class="period_selection">
-        {% block now_academic_year %}
+            <div class="period_selection">
+                {% block now_academic_year %}
 
-        {% endblock %}
+                {% endblock %}
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="user-profile">
+                    <h4>{{ user.username }}</h4>
+                    <a href="{% url 'accounts:logout' %}"> Déconnexion </a>
+                </div>
+            {% endif %}
+        </div>
     </div>
 
-    {% if user.is_authenticated %}
-        <div class="user-profile">
-            <h4>{{ user.username }}</h4>
-            <p><a href="{% url 'admin:index' %}">Administrer le site</a></p>
-            <a href="{% url 'accounts:logout' %}"> Déconnexion </a>
+    <div class="body-contener">
+
+        {% if user.is_authenticated %}
+            <div class="side-menu">
+                <ul>
+<!--                    <li><a href="{% url 'index' %}">Accueil</a></li>-->
+                    <li>
+                        <span class="dropdown">Départements</span>
+                        <ul>
+                            <li><a href="{% url 'departements_and_modules:students_faculties' %}"> Facultés </a> </li>
+                            <li><a href="{% url 'departements_and_modules:students_specialities' %}"> Spécialités </a> </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="dropdown">Cours</span>
+                        <ul>
+                            <li><a href="{% url 'departements_and_modules:students_modules' %}"> Modules </a> </li>
+                            <li><a href="{% url 'departements_and_modules:students_lessons' %}"> Matières </a> </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="dropdown">Etudiants</span>
+                        <ul>
+                            <li><a href="{% url 'students:students_list' %}"> Liste étudiants </a> </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="dropdown">Résultats</span>
+                        <ul>
+                            <li><a href="{% url 'marks_and_results:students_marks' %}"> Notes étudiants </a> </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        {% endif %}
+
+
+        <div class="body-content">
+            {% block body_content %}
+                <!--   all content     -->
+            {% endblock %}
+
         </div>
 
-        <div class="menu">
-            <ul>
-                <li><a href="{% url 'index' %}">Accueil</a></li>
-                <li> Départements
-                    <ul>
-                        <li><a href="{% url 'departements_and_modules:students_faculties' %}"> Facultés </a> </li>
-                        <li><a href="{% url 'departements_and_modules:students_specialities' %}"> Spécialités </a> </li>
-                    </ul>
-                </li>
-                <li> Cours
-                    <ul>
-                        <li><a href="{% url 'departements_and_modules:students_modules' %}"> Modules </a> </li>
-                        <li><a href="{% url 'departements_and_modules:students_lessons' %}"> Matières </a> </li>
-                    </ul>
-                </li>
-                <li> Etudiants
-                    <ul>
-                        <li><a href="{% url 'students:students_list' %}"> Liste étudiants </a> </li>
-                    </ul>
-                </li>
-                <li> Résultats
-                    <ul>
-                        <li><a href="{% url 'marks_and_results:students_marks' %}"> Notes étudiants </a> </li>
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-
-    {% endif %}
-
-
-
-    {% block body_content %}
-        <!--   all content     -->
-    {% endblock %}
+    </div>
 
 </body>
 </html>

@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block title %}
     <title>students/marks</title>
+<link rel="stylesheet" href="{% static 'sg_note/css/home-style.css' %}">
 {% endblock %}
 
 {% block now_academic_year %}
@@ -34,40 +36,35 @@
         </table>
     </div>
 
-
-    {% if max_len %}
+    {% if student_results %}
         <table border=".5px" id="students_marks">
             <thead>
                 <tr>
                     <td>N°</td>
                     <td>Nom et prénom</td>
                     <td>Moyenne de classe</td>
-                    <td>Moyenne de classe</td>
+                    <td>Note d'examen</td>
+                    <td>Moyenne semestrielle</td>
+                    <td>Moyenne generale semestrielle</td>
+                    <td>Moyenne annuelle</td>
                 </tr>
             </thead>
             <tbody>
-                {% for mark in marks %}
+                {% for result in student_results %}
                     <tr>
-                        <td> {{ forloop.counter }} </td>
-                        <td> {{ mark.student }} </td>
-                        {% for m in mark.marks %}
-                            <td>
-                                {{ m.mark_type }} <br>
-                                {% if m.is_exam %}
-                                    ex <br>
-                                {% endif %}
-                                <a href="{% url 'marks_and_results:edit_mark' m.pk %}">modifier</a>
-                            </td>
-
-                        {% endfor %}
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ result.student.full_name }}</td>
+                        <td>{{ result.lesson_class_mean|floatformat:2 }}</td>
+                        <td>{{ result.lesson_exam_mark }}</td>
+                        <td>{{ result.lesson_semester_mean|floatformat:2 }}</td>
+                        <td>{{ result.semester_mean }}</td>
+                        <td>{{ result.annual_mean }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% else %}
-
-        <p>Aucunn résultats trouvé</p>
-
+        <p>Aucun resultat disponible</p>
     {% endif %}
 
 {% endblock %}

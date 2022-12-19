@@ -48,7 +48,15 @@ def create_faculties(request):
     context = {}
     if request.method == "POST":
         form = FacultyCreateForm(request.POST)
-        print(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            faculty = Faculty()
+            faculty.name = data.get("name")
+            faculty.system = data.get("system")
+
+            faculty.save()
+            return redirect("departements_and_modules:students_faculties")
     else:
         form = FacultyCreateForm()
 
@@ -61,7 +69,15 @@ def create_specialities(request):
     context = {}
     if request.method == "POST":
         form = SpecilityCreateForm(request.POST)
-        print(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            speciality = Speciality()
+            speciality.name = data.get("name")
+            speciality.faculty = data.get("faculty")
+
+            speciality.save()
+            return redirect("departements_and_modules:students_specialities")
     else:
         form = SpecilityCreateForm()
 
@@ -96,7 +112,16 @@ def create_lessons(request):
     context = {}
     if request.method == "POST":
         form = LessonCreateForm(request.POST)
-        print(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            lesson = Lesson()
+            lesson.name = data.get("name")
+            lesson.coefficient = data.get("coefficient")
+            lesson.module = data.get("module")
+
+            lesson.save()
+            return redirect("departements_and_modules:students_lessons")
     else:
         form = LessonCreateForm()
 

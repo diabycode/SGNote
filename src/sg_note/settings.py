@@ -136,3 +136,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
+STATICFILES_DIRS = [
+    BASE_DIR / "sg_note/static",
+]
+

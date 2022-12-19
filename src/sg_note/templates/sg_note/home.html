@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>home</title>
+    <link rel="stylesheet" href="{% static 'sg_note/css/home-style.css' %}">
+{% endblock %}
+
 
 {% block now_academic_year %}
     <b>{{ now_academic_year }}</b> <a href="{% url 'edit_now_academic_year' %}">modifier</a>

@@ -238,11 +238,31 @@ def results(request):
     academic_year_selected = get_object_or_404(AcademicYear, pk=request.session.get("mark_academic_year_selected"))
     semester_selected = get_object_or_404(Semester, pk=request.session.get("mark_semester_selected"))
 
+    students = Student.objects.filter(faculty=faculty_selected)
+
+    student_results = []
+    for student in students:
+        lesson_class_mean = student.get_a_lesson_class_mean(lesson=lesson_selected, semester=semester_selected)
+        lesson_exam_mark = student.get_a_lesson_exam_mark(lesson=lesson_selected, semester=semester_selected)
+        lesson_semester_mean = student.get_a_lesson_semester_mean(lesson=lesson_selected, semester=semester_selected)
+        semester_mean = student.get_semester_mean(semester=semester_selected)
+        annual_mean = student.get_annual_mean(academic_year=academic_year_selected)
+
+        student_results.append({
+            "student": student,
+            "lesson_class_mean": lesson_class_mean if lesson_class_mean else "NULL",
+            "lesson_exam_mark": lesson_exam_mark if lesson_exam_mark else "NULL",
+            "lesson_semester_mean": lesson_semester_mean if lesson_semester_mean else "NULL",
+            "semester_mean": semester_mean if semester_mean else "NULL",
+            "annual_mean": annual_mean if annual_mean else "NULL",
+        })
+
     context["faculty_selected"] = faculty_selected
     context["module_selected"] = module_selected
     context["lesson_selected"] = lesson_selected
     context["academic_year_selected"] = academic_year_selected
     context["semester_selected"] = semester_selected
+    context["student_results"] = student_results
 
     return render(request, "marks_and_results/results.html", context=context)
 
