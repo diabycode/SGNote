@@ -114,14 +114,18 @@ def student_create_view(request):
     if request.method == "POST":
         form = StudentCreateForm(request.POST)
         if form.is_valid():
-            student = Student(
-                faculty=get_object_or_404(Faculty, pk=form["faculty"].value()),
-                speciality=get_object_or_404(Speciality, pk=form["speciality"].value()),
-                matricule=form["matricule"].value(),
-                first_name=form["first_name"].value(),
-                last_name=form["last_name"].value(),
-                birth=form["birth"].value(),
-            )
+            student_data = form.cleaned_data
+            student = Student()
+
+            student.faculty = student_data["faculty"]
+            student.speciality = student_data["speciality"]
+            student.matricule = student_data["matricule"]
+            student.first_name = student_data["first_name"]
+            student.last_name = student_data["last_name"]
+            student.birth = student_data["birth"]
+            student.actual_level = student_data["level"]
+            student.system = student_data["system"]
+
             student.save()
             return redirect("students:students_list")
     else:
@@ -141,8 +145,6 @@ def student_edit(request, pk):
 
         if form.is_valid():
             data = form.cleaned_data
-            print(data)
-            print()
 
             student.faculty = data.get("faculty")
             student.speciality = data.get("speciality")
@@ -152,6 +154,7 @@ def student_edit(request, pk):
             student.last_name = data.get("last_name")
             student.gender = data.get("gender")
             student.birth = data.get("birth")
+            student.system = data.get("system")
 
             student.save()
             return redirect("students:students_list")

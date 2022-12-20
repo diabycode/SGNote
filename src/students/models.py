@@ -4,7 +4,7 @@ import django
 from django.db import models
 
 from departements_and_modules.models import Faculty, Speciality, Lesson, Module
-from systems_and_levels.models import Level
+from systems_and_levels.models import Level, System
 
 
 class Student(models.Model):
@@ -18,6 +18,8 @@ class Student(models.Model):
     last_name = models.CharField(max_length=150, verbose_name="Nom")
     gender = models.CharField(max_length=20, verbose_name="Genre", null=True)
     birth = models.DateField(verbose_name="Naissance", blank=True, null=True)
+
+    system = models.ForeignKey(System, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Systeme")
 
     class Meta:
         verbose_name = "étudiant"
